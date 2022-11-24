@@ -35,6 +35,7 @@
           </mat-form-field>
         </div>
         <br />
+        <div *ngIf="hasReport">
         <table style="top: -30px; position:relative">
             <tr>
               <th colspan="3" style="font-weight: bold; font-size: 1.5em; padding: 2vh">
@@ -99,38 +100,38 @@
                 {{ items.qty }}
                 </td>               
                 <td  style="padding-top: 1vh; padding-bottom: 1vh; text-align: right">
-                {{ items.costprice | currency: "USD":"symbol":"1.2-2" }}
+                {{ items.price/items.qty | currency: "USD":"symbol":"1.2-2" }}
                 </td>
                 <td  style="padding-top: 1vh; padding-bottom: 1vh; text-align: right">
-                    {{ items.msrp | currency: "USD":"symbol":"1.2-2" }}
+                    {{ items.price | currency: "USD":"symbol":"1.2-2" }}
                     </td>
               </tr>
               
               <tr>
-                <td colspan="2" style="text-align: right">Sub:</td>
+                <td colspan="3" style="text-align: right">Sub:</td>
                 <td
                   class="my-primary-text"
                   style="font-weight: 600; text-align: right"
                 >
-                  {{ total | currency: "USD":"symbol":"1.2-2" }}
+                  {{ selectedReport?.amount/1.13 | currency: "USD":"symbol":"1.2-2" }}
                 </td>
               </tr>
               <tr>
-                <td colspan="2" style="text-align: right">Tax:</td>
+                <td colspan="3" style="text-align: right">Tax:</td>
                 <td
                   class="my-primary-text"
                   style="font-weight: 600; text-align: right"
                 >
-                  {{ tax | currency: "USD":"symbol":"1.2-2" }}
+                  {{ selectedReport?.amount/1.13 *0.13 | currency: "USD":"symbol":"1.2-2" }}
                 </td>
               </tr>
               <tr>
-                <td colspan="2" style="text-align: right">Total:</td>
+                <td colspan="3" style="text-align: right">Total:</td>
                 <td
                   class="my-primary-text"
                   style="font-weight: 600; text-align: right"
                 >
-                  {{ total | currency: "USD":"symbol":"1.2-2" }}
+                  {{ selectedReport?.amount | currency: "USD":"symbol":"1.2-2" }}
                 </td>
               </tr>
             </table>
@@ -140,6 +141,7 @@
             View PDF
           </button>
         </div> 
+      </div>
       </form>
     </mat-card-content>
   </mat-card>
