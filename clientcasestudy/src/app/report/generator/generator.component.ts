@@ -55,7 +55,7 @@ export class GeneratorComponent implements OnInit, OnDestroy {
     this.msg = '';
     this.vendorid = new FormControl('');
     this.productid = new FormControl('');
-    this.eoq = new FormControl('');
+    this.eoq = new FormControl('0');
     this.generatorForm = this.builder.group({
       productid: this.productid,
       vendorid: this.vendorid,
@@ -255,7 +255,14 @@ export class GeneratorComponent implements OnInit, OnDestroy {
               productid: this.selectedProduct.id,
               qty: this.selectedProduct.eoq,
               price: this.selectedProduct.msrp,
+              name: this.selectedProduct.name,
+              costprice: this.selectedProduct.costprice,
+              rop: this.selectedProduct.rop,
+              eoq: this.selectedProduct.eoq,
+              qoh: this.selectedProduct.qoh,
+              qoo: this.selectedProduct.qoo,
             } as ReportItem;
+            console.log(purchaseOrderItem);
             this.items.push(purchaseOrderItem);
           }
           this.total = 0.0;
@@ -300,7 +307,7 @@ export class GeneratorComponent implements OnInit, OnDestroy {
       items: this.items,
       vendorid: this.selectedProduct.vendorid,
       amount: this.total,
-      datecreated:'',
+      podate:'',
     };
     this.reportService.add(report).subscribe({
       // observer object

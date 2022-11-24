@@ -7,5 +7,5 @@ export interface Report {
   vendorid: number;
   amount: number;
   items: ReportItem[];
-  datecreated?: string;
+  podate?: string;
 }

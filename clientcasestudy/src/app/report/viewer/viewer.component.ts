@@ -378,6 +378,7 @@ loadVendorReport(id: number): void {
   // expenses aren't part of the page, so we don't use async pipe here
   this.msg = 'loading reports...';
   this.reports$ = this.reportService.getSome(id);
+ 
   // this.hasReport = true;
   // console.log("reportbool",this.hasReport)
 }
