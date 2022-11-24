@@ -33,7 +33,7 @@ public class PurchaseOrderDAO {
             realItem.setProductid(item.getProductid());
             realItem.setQty(item.getQty());
             realItem.setPrice(item.getPrice());
-
+            realItem.setProductname(item.getProductname());
             entityManager.persist(realItem);
             //we also need to update the QOO on the product table
             Product prod = prodRepo.getReferenceById(item.getProductid());
@@ -46,4 +46,6 @@ public class PurchaseOrderDAO {
         
         return realPurchase;
     }
+
+    
 }

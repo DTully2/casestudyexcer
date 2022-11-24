@@ -7,4 +7,6 @@ export interface ReportItem {
   productid: number;
   qty: number;
   price: number;
+  // name: string;
+  productname: string;
 }

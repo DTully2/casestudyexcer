@@ -193,11 +193,14 @@ export class ViewerComponent implements OnInit, OnDestroy {
           id: 0,
           reportid: 0,
           productid: this.selectedReport?.id,
+
           qty: 0,
-          price: 0
+          price: 0,
+          // name: this.selectedReport?.name,
+          productname: this.selectedProduct?.name,
         };
         if (this.vendorProducts !== undefined) {
-          // console.log("employee expenses", this.employeeExpenses,"this report",this.selectedReport);
+           console.log( "this report",this.selectedReport);
           this.hasReport = true;
           this.reportExpenses = this.vendorProducts.filter((product) =>
             this.selectedReport.items.some(
@@ -222,6 +225,8 @@ export class ViewerComponent implements OnInit, OnDestroy {
           productid: this.selectedProduct?.id,
           qty: 0,
           price: this.selectedProduct?.costprice,
+          // name: this.selectedProduct?.name,
+          productname: this.selectedProduct?.name,
         };
         if (
           this.items.find((item) => item.productid === this.selectedProduct?.id)

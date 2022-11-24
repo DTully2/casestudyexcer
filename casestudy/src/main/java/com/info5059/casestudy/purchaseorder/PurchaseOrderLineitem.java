@@ -26,4 +26,7 @@ public class PurchaseOrderLineitem {
     private String productid;
     private int qty;
     private BigDecimal price;
+    private String productname;
+    private BigDecimal amount;
+
 }

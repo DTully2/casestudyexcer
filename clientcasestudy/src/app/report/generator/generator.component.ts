@@ -255,7 +255,7 @@ export class GeneratorComponent implements OnInit, OnDestroy {
               productid: this.selectedProduct.id,
               qty: this.selectedProduct.eoq,
               price: this.selectedProduct.msrp,
-              name: this.selectedProduct.name,
+              productname: this.selectedProduct.name,
               costprice: this.selectedProduct.costprice,
               rop: this.selectedProduct.rop,
               eoq: this.selectedProduct.eoq,
