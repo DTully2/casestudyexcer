@@ -262,7 +262,7 @@ export class GeneratorComponent implements OnInit, OnDestroy {
               qoh: this.selectedProduct.qoh,
               qoo: this.selectedProduct.qoo,
             } as ReportItem;
-            console.log(purchaseOrderItem);
+            // console.log(purchaseOrderItem);
             this.items.push(purchaseOrderItem);
           }
           this.total = 0.0;

@@ -23,5 +23,7 @@ public interface PurchaseOrderRepository extends CrudRepository<PurchaseOrder, L
   int deleteOne(Long purchaseOrderId);
 
   Optional<PurchaseOrder> findById(Long id);
+  Optional<PurchaseOrder> getId();
   List<PurchaseOrder> findByVendorid(Long vendorid);
+
 }

@@ -1,6 +1,11 @@
 package com.info5059.casestudy.purchaseorder;
 
 import com.info5059.casestudy.purchaseorder.PurchaseOrderLineitem;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.client.j2se.MatrixToImageConfig;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
 import com.info5059.casestudy.Product.Product;
 import com.info5059.casestudy.Product.ProductRepository;
 import com.info5059.casestudy.vendor.Vendor;
@@ -22,6 +27,8 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
+
+import org.springframework.http.MediaType;
 import org.springframework.web.servlet.view.document.AbstractPdfView;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -37,6 +44,8 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.security.auth.callback.LanguageCallback;
 
 /**
  * ReportPDFGenerator - a class for creating dynamic expense report output in
@@ -61,7 +70,7 @@ public abstract class PurchasePDFGenerator extends AbstractPdfView {
                 // add the image to the document
                 PageSize pg = PageSize.A4;
                 Image img = new Image(ImageDataFactory.create(imageUrl)).scaleAbsolute(170, 105)
-                                .setFixedPosition(pg.getWidth() / 2 - 250,700);
+                                .setFixedPosition(pg.getWidth() / 2 - 250, 700);
                 document.add(img);
                 // now let's add a big heading
                 document.add(new Paragraph("\n\n"));
@@ -216,7 +225,8 @@ public abstract class PurchasePDFGenerator extends AbstractPdfView {
                                                                 .setTextAlignment(TextAlignment.RIGHT));
                                                 table.addCell(cell);
                                                 BigDecimal TotalAmount = product.getCostprice();
-                                                BigDecimal extotal = TotalAmount.multiply(new BigDecimal(line.getQty()));
+                                                BigDecimal extotal = TotalAmount
+                                                                .multiply(new BigDecimal(line.getQty()));
                                                 BigDecimal subtotal = extotal.multiply(new BigDecimal(line.getQty()));
 
                                                 cell = new Cell().add(new Paragraph(formatter.format(extotal))
@@ -226,14 +236,14 @@ public abstract class PurchasePDFGenerator extends AbstractPdfView {
                                                 table.addCell(cell);
 
                                                 // potot = potot.add(product.getCostprice(),
-                                                //                 new MathContext(8, RoundingMode.UP)) ;
+                                                // new MathContext(8, RoundingMode.UP)) ;
 
                                                 // tax= extotal.multiply(new BigDecimal(0.13));
-                                                
+
                                                 subtot = subtot.add(extotal, new MathContext(8, RoundingMode.UP));
-                                                
+
                                         }
-                                        tax= subtot.multiply(new BigDecimal(0.13));
+                                        tax = subtot.multiply(new BigDecimal(0.13));
                                         potot = subtot.add(tax, new MathContext(8, RoundingMode.UP));
                                 }
 
@@ -255,8 +265,7 @@ public abstract class PurchasePDFGenerator extends AbstractPdfView {
                                                 .setFontSize(12)
                                                 .setBold()
                                                 .setBorder(Border.NO_BORDER)
-                                                .setTextAlignment(TextAlignment.RIGHT)
-                                                );
+                                                .setTextAlignment(TextAlignment.RIGHT));
                                 table.addCell(cell);
                                 cell = new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(""));
                                 table.addCell(cell);
@@ -277,7 +286,7 @@ public abstract class PurchasePDFGenerator extends AbstractPdfView {
                                                 .setBold()
                                                 .setBorder(Border.NO_BORDER)
                                                 .setTextAlignment(TextAlignment.RIGHT));
-                                                
+
                                 table.addCell(cell);
                                 cell = new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(""));
                                 table.addCell(cell);
@@ -304,6 +313,12 @@ public abstract class PurchasePDFGenerator extends AbstractPdfView {
                                 DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mm a");
                                 document.add(new Paragraph(dateFormatter.format(LocalDateTime.now()))
                                                 .setTextAlignment(TextAlignment.CENTER));
+
+                                // create an image for qr code
+                                byte[] qrcodebin = addSummaryQRCode(emp, po);
+
+                              Image qrcode = new Image(ImageDataFactory.create(qrcodebin)).scaleAbsolute(100, 100).setFixedPosition(460,60);
+                                
                                 document.close();
                         } // end if
                 } catch (Exception ex) {
@@ -312,4 +327,26 @@ public abstract class PurchasePDFGenerator extends AbstractPdfView {
                 // finally send stream back to the controller
                 return new ByteArrayInputStream(baos.toByteArray());
         }
+
+     
+        public static byte[] addSummaryQRCode(Vendor ven, PurchaseOrder po ) {
+                byte[] qrcode = null;
+                 Locale locale = new Locale("en","US");                
+                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mm a");
+                NumberFormat formatter = NumberFormat.getCurrencyInstance(locale);
+                String text ="Summary for Purchase Order:" + po.getId() + "\nDate:"
+                + dateFormatter.format(po.getPodate()) + "\nVendor:"
+                + ven.getName()
+                + "\nTotal:" + formatter.format(po.getAmount()); 
+                try {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();                 
+                BitMatrix matrix = new MultiFormatWriter().encode(text, BarcodeFormat.QR_CODE, 200, 200);
+                    MatrixToImageWriter.writeToStream(matrix, MediaType.IMAGE_PNG.getSubtype(), baos,
+                            new MatrixToImageConfig());
+                    qrcode = baos.toByteArray();
+                } catch (Exception ex) {
+                    System.out.println("QRcode failed " + ex.getMessage());
+                }
+                return qrcode;
+            }
 }

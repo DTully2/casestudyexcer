@@ -200,7 +200,7 @@ export class ViewerComponent implements OnInit, OnDestroy {
           productname: this.selectedProduct?.name,
         };
         if (this.vendorProducts !== undefined) {
-           console.log( "this report",this.selectedReport);
+          //  console.log( "this report",this.selectedReport);
           this.hasReport = true;
           this.reportExpenses = this.vendorProducts.filter((product) =>
             this.selectedReport.items.some(
